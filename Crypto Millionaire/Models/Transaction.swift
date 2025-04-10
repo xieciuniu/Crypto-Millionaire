@@ -9,7 +9,7 @@ import Foundation
 
 struct Transaction: Identifiable, Codable {
     let id: String
-    let cryptoID: String
+    let cryptoId: String
     let cryptoSymbol: String
     let cryptoName: String
     let type: TransactionType
@@ -43,9 +43,9 @@ struct Transaction: Identifiable, Codable {
 }
 
 extension Transaction {
-    init(crytpoID: String, cryptoSymbol: String, cryptoName: String, type: TransactionType, price: Double, quntity: Double, fee: Double = 0.001) {
+    init(cryptoId: String, cryptoSymbol: String, cryptoName: String, type: TransactionType, price: Double, quntity: Double, fee: Double = 0.001) {
         self.id = UUID().uuidString
-        self.cryptoID = crytpoID
+        self.cryptoId = cryptoId
         self.cryptoSymbol = cryptoSymbol
         self.cryptoName = cryptoName
         self.type = type

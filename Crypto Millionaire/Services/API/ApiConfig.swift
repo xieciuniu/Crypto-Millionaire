@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+struct ApiConfig {
+    static let coinGeckoApiKey = "CG-GwQnveWTYjJKTTccDXP687SE"
+}

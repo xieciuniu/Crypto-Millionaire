@@ -18,7 +18,7 @@ struct UserBalance: Codable {
 }
 
 extension UserBalance {
-    static func defaultbalance() -> UserBalance {
+    static func defaultBalance() -> UserBalance {
         return UserBalance(balance: 10000.0, initialBalance: 10000.0, timestamp: Date())
     }
     
