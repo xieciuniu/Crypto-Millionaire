@@ -27,12 +27,32 @@ class CryptocurrencyListViewModel: ObservableObject {
                 self?.filterCryptocurrencies(text)
             }
             .store(in: &cancellables)
+        
+        // Initial data load
+        loadCryptocurrencies()
     }
     
+    // Loads cryptocurrency data from API
+    func loadCryptocurrencies() {
+        isLoading = true
+        errorMessage = nil
+        
+        coinGeckoService.getCoins()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
+                
+                if case .failure(let error) = completion {
+                    self?.errorMessage = "Failed to load cryptocurrencies: \(error.localizedDescription)"
+                }
+            }, receiveValue: { [weak self] coins in
+                self?.cryptocurrencies = coins
+                self?.filterCryptocurrencies(self?.searchText ?? "")
+            })
+            .store(in: &cancellables)
+    }
     
-    
-    
-    
+    // Filters cryptocurriences based on search text
     private func filterCryptocurrencies(_ searchText: String) {
         if searchText.isEmpty {
             filteredCryptocurrencies = cryptocurrencies
@@ -42,5 +62,10 @@ class CryptocurrencyListViewModel: ObservableObject {
                 coin.symbol.lowercased().contains(searchText.lowercased())
             }
         }
+    }
+    
+    // manual refresh of curptocurrency data
+    func refreshData() {
+        loadCryptocurrencies()
     }
 }
