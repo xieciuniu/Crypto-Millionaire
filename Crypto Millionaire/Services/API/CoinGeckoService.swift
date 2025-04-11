@@ -24,14 +24,14 @@ class CoinGeckoService {
     
     init(apiKey: String) {
         self.apiKey = apiKey
+        
         jsonDecoder = JSONDecoder()
-        jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         jsonDecoder.dateDecodingStrategy = .formatted(dateFormatter)
     }
     
-    // Pomocnicza metoda do dodawania klucza API do URL
     private func urlWithAPIKey(_ urlString: String) -> URL? {
         guard var components = URLComponents(string: urlString) else {
             return nil
@@ -44,8 +44,10 @@ class CoinGeckoService {
         return components.url
     }
     
+    
     func getCoins() -> AnyPublisher<[Cryptocurrency], Error> {
         let urlString = "\(baseURL)/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false"
+        print(urlString)
         
         guard let url = urlWithAPIKey(urlString) else {
             return Fail(error: NetworkError.invalidURL).eraseToAnyPublisher()
@@ -131,6 +133,83 @@ class CoinGeckoService {
             .decode(type: MarketChartData.self, decoder: jsonDecoder)
             .eraseToAnyPublisher()
     }
+    
+//    func debugGetCoins() {
+//        let urlString = "\(baseURL)/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false"
+//        
+//        guard var components = URLComponents(string: urlString) else {
+//            print("Invalid URL")
+//            return
+//        }
+//        
+//        var queryItems = components.queryItems ?? []
+//        queryItems.append(URLQueryItem(name: "x_cg_demo_api_key", value: apiKey))
+//        components.queryItems = queryItems
+//        
+//        guard let url = components.url else {
+//            print("Failed to create URL")
+//            return
+//        }
+//        
+//        URLSession.shared.dataTask(with: url) { data, response, error in
+//            if let error = error {
+//                print("Network error: \(error)")
+//                return
+//            }
+//            
+//            guard let httpResponse = response as? HTTPURLResponse else {
+//                print("Invalid response type")
+//                return
+//            }
+//            
+//            print("Status code: \(httpResponse.statusCode)")
+//            
+//            guard let data = data else {
+//                print("No data received")
+//                return
+//            }
+//            
+//            do {
+//                if let jsonArray = try JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+//                   let firstItem = jsonArray.first {
+//                    print("API returned keys: \(firstItem.keys.sorted())")
+//                    
+//                    for (key, value) in firstItem {
+//                        print("Key: \(key), Type: \(type(of: value))")
+//                    }
+//                } else {
+//                    print("Failed to parse JSON as array of dictionaries")
+//                    if let errorResponse = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+//                        print("API error response: \(errorResponse)")
+//                    }
+//                }
+//                
+//                // Teraz spróbuj zdekodować do Twojego modelu
+//                let cryptocurrencies = try self.jsonDecoder.decode([Cryptocurrency].self, from: data)
+//                print("Successfully decoded \(cryptocurrencies.count) cryptocurrencies")
+//                if let first = cryptocurrencies.first {
+//                    print("First item: \(first)")
+//                }
+//            } catch {
+//                print("JSON parsing error: \(error)")
+//                if let decodingError = error as? DecodingError {
+//                    switch decodingError {
+//                    case .keyNotFound(let key, let context):
+//                        print("Key not found: \(key), context: \(context)")
+//                    case .typeMismatch(let type, let context):
+//                        print("Type mismatch: expected \(type), context: \(context)")
+//                    case .valueNotFound(let type, let context):
+//                        print("Value not found: \(type), context: \(context)")
+//                    case .dataCorrupted(let context):
+//                        print("Data corrupted: \(context)")
+//                    @unknown default:
+//                        print("Unknown decoding error")
+//                    }
+//                }
+//            }
+//        }
+//        .resume()
+//    }
 }
 
 struct CryptocurrencyDetail: Codable {
@@ -173,6 +252,8 @@ struct CryptocurrencyDetail: Codable {
             case low24h = "low_24h"
         }
     }
+    
+    
 }
 
 struct MarketChartData: Codable {

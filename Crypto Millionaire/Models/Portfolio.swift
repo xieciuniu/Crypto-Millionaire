@@ -44,7 +44,7 @@ extension Portfolio {
         self.quantity = newTotalQuantity
     }
     
-    mutating func substract(quantity: Double) {
+    mutating func subtract(quantity: Double) {
         self.quantity -= quantity
     }
 }

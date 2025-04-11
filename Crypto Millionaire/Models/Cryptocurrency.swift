@@ -15,24 +15,19 @@ struct Cryptocurrency: Identifiable, Codable {
     let image: String
     let currentPrice: Double
     let marketCap: Double?
-    let marktetCapRank: Int?
+    let marketCapRank: Int?
     let priceChangePercentage24h: Double?
-    let lastUpdated: String?
+    let lastUpdated: String
     
     enum CodingKeys: String, CodingKey {
-        case id
-        case symbol
-        case name
-        case image
-        case currentPrice = "quote_current"
+        case id, symbol, name, image
+        case currentPrice = "current_price"
         case marketCap = "market_cap"
-        case marktetCapRank = "market_cap_rank"
+        case marketCapRank = "market_cap_rank"
         case priceChangePercentage24h = "price_change_percentage_24h"
         case lastUpdated = "last_updated"
     }
-}
-
-extension Cryptocurrency {
+    
     var formattedPrice: String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -44,18 +39,13 @@ extension Cryptocurrency {
         guard let priceChange = priceChangePercentage24h else {
             return .gray
         }
-        
         return priceChange >= 0 ? .green : .red
     }
     
     var formattedPriceChange: String {
         guard let priceChange = priceChangePercentage24h else {
-            return "0.00 %"
+            return "0.00%"
         }
-        
-        return String(format: "%.2f%", priceChange)
+        return String(format: "%.2f%%", priceChange)
     }
 }
-
-
-

@@ -43,15 +43,15 @@ struct Transaction: Identifiable, Codable {
 }
 
 extension Transaction {
-    init(cryptoId: String, cryptoSymbol: String, cryptoName: String, type: TransactionType, price: Double, quntity: Double, fee: Double = 0.001) {
+    init(cryptoId: String, cryptoSymbol: String, cryptoName: String, type: TransactionType, price: Double, quantity: Double, fee: Double = 0.001) {
         self.id = UUID().uuidString
         self.cryptoId = cryptoId
         self.cryptoSymbol = cryptoSymbol
         self.cryptoName = cryptoName
         self.type = type
-        self.amount = price * quntity
+        self.amount = price * quantity
         self.price = price
-        self.quantity = quntity
+        self.quantity = quantity
         self.fee = fee
         self.timestamp = Date()
     }
